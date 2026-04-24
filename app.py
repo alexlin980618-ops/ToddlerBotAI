@@ -1,4 +1,6 @@
 import os
+import sys
+import subprocess
 import streamlit as st
 import chromadb
 from dotenv import load_dotenv
@@ -8,13 +10,25 @@ from google import genai
 load_dotenv()
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
-# Connect to ChromaDB
-# --- NEW AUTO-BUILD LOGIC ---
+# --- UPGRADED AUTO-BUILD LOGIC ---
 if not os.path.exists("./chroma_db"):
     with st.spinner("First-time setup: Building the ToddlerBot memory..."):
-        os.system("python rag_engine.py")
-# ----------------------------
+        try:
+            # Run the engine and capture any errors
+            subprocess.run(
+                [sys.executable, "rag_engine.py"], 
+                capture_output=True, 
+                text=True, 
+                check=True
+            )
+        except subprocess.CalledProcessError as e:
+            # If it crashes, print the exact error to the screen!
+            st.error("rag_engine.py crashed! Here is the exact error:")
+            st.code(e.stderr)
+            st.stop()
+# ---------------------------------
 
+# Connect to ChromaDB
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_collection(name="toddlerbot_memory")
 
