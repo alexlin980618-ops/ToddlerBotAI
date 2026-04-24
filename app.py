@@ -9,12 +9,14 @@ load_dotenv()
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 # Connect to ChromaDB
+# --- NEW AUTO-BUILD LOGIC ---
+if not os.path.exists("./chroma_db"):
+    with st.spinner("First-time setup: Building the ToddlerBot memory..."):
+        os.system("python rag_engine.py")
+# ----------------------------
+
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
-try:
-    collection = chroma_client.get_collection(name="toddlerbot_memory")
-except Exception:
-    st.error("Database not found! Run rag_engine.py first.")
-    st.stop()
+collection = chroma_client.get_collection(name="toddlerbot_memory")
 
 # Page setup
 st.set_page_config(page_title="ToddlerBot AI", page_icon="🤖")
