@@ -1,0 +1,46 @@
+ToddlerBot Official Hardware Documentation
+Source: https://hshi74.github.io/toddlerbot/
+
+=== BILL OF MATERIALS ===
+There are two versions: toddlerbot_2xc (recommended default) and toddlerbot_2xm (stronger, higher budget).
+For 1.0 to 2.0 migration, purchase only the highlighted items in the BOM.
+Full BOM spreadsheet: https://docs.google.com/spreadsheets/d/e/2PACX-1vQmoxJnTnUaQ_-WAAjnchBhaX5HZ4ElUV5pXksEV6GEbeEjiie1E_BdN9XCMt6FtfBaopXoaeSOeMDg/pubhtml
+Purchase the essentials section first. PCB files are not in the BOM — see PCB Sourcing section.
+Open a GitHub issue if any parts are hard to source.
+
+=== PCB (8ch) SOURCING ===
+Upload the PCB ZIP file (TTLPowerBoardV8.zip) to JLC PCB. Use Chrome — Safari sometimes has issues.
+No need to change PCB order options. You can change the color. You can remove mark to avoid order number on PCB.
+Assembly options: use Standard PCBA, assemble both sides, order 5 pcs (price doesn't differ much due to setup fees).
+Upload BOM file (bom_v8.csv) and CPL file (positions_v8.csv) when prompted.
+Make sure to check all parts in the Select column or they won't be assembled.
+
+Common out-of-stock part replacements:
+- JST EH plug: alternative part number C160259
+- 2x06P pin socket: replacement C2902689
+- Terminal block: any 2-pin 5mm spacing terminal block, search "terminal block 5mm", e.g. C5188440
+
+Verify part placement matches the official front and back placement images exactly before ordering.
+
+=== 3D PRINTING ===
+BambuLab printers are highly recommended for tolerances and speed.
+Use the MakerWorld release: https://makerworld.com/en/models/1733983
+For BambuLab users: just hit print.
+For other printers: download 3MF files from MakerWorld to check printing orientation and profile.
+Proper orientation and profiles are crucial for strength and durability.
+For custom modifications or individual parts: CAD files at https://cad.onshape.com/documents/565bc33af293a651f66e88d2
+
+=== ASSEMBLY ===
+Assembly order:
+1. Arms (easiest, good practice — left and right arms are identical)
+2. Legs (left and right are mirrored)
+3. Head, Waist, and Torso (up to Step 8 of torso assembly)
+4. Jetson Setup (set up before installing into torso — see Software sections)
+5. Install PCBs and battery into torso, run standing test
+
+Resources:
+- Interactive Assembly Manual: https://docs.tnkr.ai/Stanford%20University
+- YouTube playlist: https://www.youtube.com/playlist?list=PLX0JY1vogaVYRRxF5sH4IedZpfX7meuz0
+- Onshape CAD: https://cad.onshape.com/documents/565bc33af293a651f66e88d2
+
+Assembly sections: Arm, Leg, Camera Cables, Speaker Cables, Head, Waist, Torso, ID the Motors, Wiring, Power Board, Jetson Power Cables, Power Supply Cables, Standing Test, (Optional) Parallel Jaw Gripper.

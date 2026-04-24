@@ -1,0 +1,31 @@
+February 28, 2026 Assembly Log
+
+Component: Jetson Orin Power Connector (DC5521 vs DC5525)
+Problem: The purchased DC5521 male connector could not be inserted into the Jetson Orin DevKit Carrier Board.
+Initially assumed it was a tolerance issue.
+Solution (Temporary): Used a T10 Torx screwdriver to manually widen the plastic hole of the DC5521 connector, then carefully inserted it considering voltage compatibility and low short-circuit risk. Successfully powered on, but the handmade connection was unstable and would disconnect when bumped.
+Proper Solution: Noticed that both the J4012 and DevKit specs actually list DC5525, which differs from the BOM table. Ordered a correct DC5525 cable as a replacement.
+Contributors: Janet, Eason
+
+Component: IMU (BNO085) — Unprocessable Batch Bytes Error
+Problem: BNO085 IMU could not be read. Error displayed: "Unprocessable Batch bytes."
+Diagnosis: Tested with NodeMCU-32s and successfully read the IMU, confirming the hardware itself was not faulty.
+Root Cause: Likely related to BNO085's Clock Stretching violating the I2C protocol, resulting in garbled data.
+Solution: Based on Gemini's suggestion, added multiple retries in the code. This resolved the issue.
+Contributors: Jiaxin, Huixin, Janet, Eason
+
+Component: Battery (LiPo 4S)
+Problem: Left ToddlerBot powered on with battery inserted when leaving. Battery fully discharged and almost could not be recharged.
+Solution (Recovery procedure):
+Step 1: Use 0.5A NiMH blind-charge mode until each cell reaches 3V (approximately 2 minutes). Monitor with a 1~8S voltage beeper in real time and watch battery temperature closely.
+Step 2: Switch back to LiPo 4S Balance Charger mode. Continue slow charging at 0.5~1A until full.
+Step 3: Use the charger's internal resistance measurement mode to evaluate battery health. Healthy values should be close and small (e.g., 003, 004, 004, 005).
+Lessons Learned:
+- Always remove the battery when leaving.
+- Do not store the battery at low charge. Full charge storage is also not recommended unless the battery will be used within 3 days.
+- Consider borrowing a DC power supply for development to avoid repeated charge/discharge cycles.
+
+Component: Motor Controller / PCB Communication
+Problem: ToddlerBot's power board has a built-in motor controller. After connecting, motors should be readable at /dev/ttyCH9344USB[0-9]+, but the program could not use them successfully.
+Temporary Solution: Switched to using the U2D2 Controller and changed the port to /dev/ttyUSB0.
+Concern: This workaround may cause precision issues or delayed motor responses.

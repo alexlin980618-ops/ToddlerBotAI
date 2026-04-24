@@ -1,0 +1,43 @@
+March 6, 2026 Assembly Log
+
+Component: Jetson Orin Power Connector (Follow-up)
+Problem: BOM table lists DC5521 as the power connector for the DevKit, but the correct connector is DC5525.
+Solution: Replaced the cable with the correct DC5525 connector and successfully powered the Jetson. Reported the BOM error to the official ToddlerBot team — they have since corrected it.
+
+Component: Jetson Orin Mounting and Cable Management
+Status: Jetson successfully mounted. However, cable routing was difficult. May need to dismount and re-route cables more cleanly.
+
+Component: Fisheye Camera Cable
+Problem: The cable that came with the fisheye camera was too long.
+Solution: Purchased JST ZHR-4 pre-wired connectors as a replacement. Waiting for delivery to solder and test.
+
+Component: Speaker Cable
+Problem: Original speaker cable was too short.
+Solution: Replaced with a longer cable.
+
+Component: Hex Keys
+Problem: Hex keys became worn after use.
+Solution: Noticed the makerspace has a screwdriver bit set but the handle was missing. Purchased inexpensive handles that are compatible with the makerspace bits. Planning to expense through the makerspace.
+
+Component: Power PCB Inside Torso
+Problem: When fitting the small power/control PCB into the torso, the battery would press against it and cause the voltage converter to tilt.
+Solution: Found a 3D-printed holder in the official ToddlerBot 2.0 Overview video. Printed and installed it successfully.
+
+Component: Motor Controller Port (Follow-up from Feb 28)
+Problem: Previously could not read motors at /dev/ttyCH9344USB[0-9]+.
+Solution: Replaced the PCB and ensured it was properly connected. Motors now readable correctly.
+
+Component: Front Cover Knob
+Problem: The knob used to secure the front cover requires an M3xM5xL4 thread adapter (aka thread insert), but this part is not listed in the BOM table.
+Solution: Ordered from Shopee. Waiting for delivery.
+
+Component: Lost Screws
+Note: During transport, approximately 3 to 5 screws were lost. One was found and reinstalled. Others still missing — check BOM for replacement sizes.
+
+Component: Software — Bulk Read Error
+Problem: A large number of "Bulk Read Error" messages appeared in the software. After some time, more serious Dynamixel errors appeared that could not be stopped with Ctrl+C.
+Possible Causes (per documentation):
+1. Poor connection (exact component not specified in docs).
+2. Wrong robot description file selected (e.g., palm vs gripper for hand type).
+Finding: During head disassembly for cable re-routing, discovered the Neck Rod was broken. Already reprinted and waiting for assembly. Hypothesis: the broken neck rod caused incorrect robot state, leading to the errors.
+Status: Fixing the neck rod is expected to reduce error messages. Other policies also have errors that need investigation.

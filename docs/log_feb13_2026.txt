@@ -1,0 +1,31 @@
+February 13, 2026 Assembly Log
+
+Component: Motor Configuration (2xm version)
+Problem: Online assembly resources were not updated for the 2xm version of ToddlerBot.
+Solution: The only difference is that one thigh motor is replaced by two new motors. Cross-reference with the BOM table — the 2xm BOM will show two extra motors. Use the parameter --robot toddlerbot_2xm when running scripts. You can also check the filenames inside the path to confirm.
+
+Component: Arm Gears
+Problem: Arm was missing two sets of gears.
+Solution: Download the missing files directly from Onshape and print them.
+
+Component: 3D Printing
+Problem: 3D printing kept failing, suspected due to cold weather.
+Solution: Added an outer brim to the print settings, and switched from printing all parts layer-by-layer simultaneously to printing one part at a time. This resolved the failures.
+
+Component: Root Board Motor Connection (TTL)
+Problem: Could not connect all motors through the root board. Discovered that the TTL data pin was not connected.
+Solution: Ran a jumper wire on the back of the PCB and soldered the pin. Three other boards from the same batch had the same issue — all were fixed the same way. Note: The circuit diagram file provided shows that the via hole should have been connected.
+
+Component: Software / Motor Communication
+Problem: Dynamixel Wizard could detect all motors, but running the program gave a "please check motor connection" error.
+Solution: The program was hardcoded with the author's own communication board name, which did not match ours. Changed the communication port to ttyUSB0.
+
+Additional Tips (Non-critical, but speeds up assembly):
+- Prepare an electric screwdriver — hand-tightening is sometimes difficult.
+- Keep extra hex keys on hand, as some may be worn down.
+- When assembling the robot, if a connector will be covered later, remember to connect the wires first. In principle, each motor needs wires connected at both ends.
+- Prepare sandpaper — some 3D printed parts need sanding before bearings can be inserted.
+
+Unresolved Issues at Time of Log:
+- Jetson Orin power connector needs to be repurchased — the original one does not fit well. Temporarily using a power adapter as a workaround.
+- Stand policy keeps reporting that IMU data cannot be read. Unclear if it is a wiring issue or something else. Requires further investigation.

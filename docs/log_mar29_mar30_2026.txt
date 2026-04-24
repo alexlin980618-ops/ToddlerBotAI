@@ -1,0 +1,47 @@
+March 29, 2026 Assembly Log
+
+Component: Keyframe Animation / .lz4 Files
+Finding: The .lz4 files provided by Stanford are hardcoded motion sequences (not RL-trained or imitation-learned policies). Stanford provides a keyframe editor that allows users to define key poses, and the program interpolates the transitions smoothly (similar to keyframe animation in video or 3D software).
+Experiment: Added one new keyframe and modified another in the stand-up sequence. By making ToddlerBot stand on tiptoe and spread its legs slightly outward, the center of gravity shifted backward, stabilizing the lower body. ToddlerBot successfully stood up.
+
+---
+
+March 30, 2026 Assembly Log
+
+Component: Waist Motor #2
+Problem: Waist motor #2 was not being detected.
+Solution: Reassembled the waist section. Suspected cause was a gear spacer that was slightly misaligned, making it very difficult to tighten the screws and causing poor connection on motor #2. After correct reassembly, motor was detected normally.
+
+Component: Walk Policy Training
+Problem: Walk policy training on ToddlerBot's onboard computer (referred to as "the stolen one") had JAX compatibility issues — incorrect CUDA version and related dependencies.
+Solution: Trained on the lab computer instead. Successfully trained the official walk and cartwheel policies on the lab computer.
+Note: The crawl .lz4 file is missing the action data and cannot be trained. Consider creating a custom .lz4 file from scratch to train desired behaviors.
+
+Component: Push-up Motion
+Achievement: ToddlerBot can now perform push-ups!
+Notes:
+- Push-ups must start from the standing position. If the stand fails, push-ups cannot proceed.
+- ToddlerBot sometimes cannot stand stably on the ground independently. This is because the waist was not fixed properly during calibration. Manually pushing the waist slightly backward helps stabilize the center of gravity.
+- During push-ups, the wires on waist motor #3 and left knee motor #7 tend to get caught. Need to find a way to secure the wires on the robot to prevent them from being pulled during motion.
+
+Component: Non-slip Rubber Pads
+Status: Added non-slip rubber pads to hands and feet.
+Issues:
+- Foot pads tend to fall off. Consider reattaching with stronger adhesive in the future.
+- Hand pads do not seem to help much with push-up performance.
+
+Component: KeyFrame App
+Status: KeyFrame App is now officially live!
+Usage: Run /home/user/Desktop/Eason/keyframe_kit_starter.py, then open http://devkit.local:8080 in a browser on the same network to design and simulate ToddlerBot motions.
+Output: Training produces .lz4 files saved to /home/user/robot.
+Purpose: Allows users to create new keyframes or open and modify existing .lz4 files, enabling quick creation of new motion tasks using the official keyframe kit.
+
+Component: Docker / Gemini Integration Attempt
+Attempt: Tried to install Gemini on ToddlerBot by setting up Docker.
+Problem: Docker would not run.
+Partial Solution Found:
+Step 1: Run sudo update-alternatives --config iptables and select the legacy option. Ref: https://github.com/docker/cli/issues/4367#issuecomment-1642000524
+Step 2: May need to recompile the kernel to add CONFIG_IP_NF_RAW=m support. Status: Not yet resolved.
+
+Component: Official Replay Files
+Note: All official replay files provided end with the robot face-down on the floor. Be aware when using them for testing.

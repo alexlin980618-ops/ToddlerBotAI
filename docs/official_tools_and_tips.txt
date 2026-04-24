@@ -1,0 +1,53 @@
+ToddlerBot Official Tools and Tips Documentation
+Source: https://hshi74.github.io/toddlerbot/
+
+=== ZERO-POINT CALIBRATION ===
+1. 3D-print the calibration devices (find sliced plates on MakerWorld, CAD on Onshape: https://cad.onshape.com/documents/5aba041c57aa694292cf8c1e)
+2. Insert calibration devices — they should click and lock joints. If joints still move, check for obstructing cables or incorrect insertion.
+   For knee joints: lower limits align with zero point, natural stopper serves as calibration reference.
+   For parallel jaw gripper: zero point is the open position.
+3. Run calibration:
+   python toddlerbot/tools/calibrate_zero.py --robot <robot_name> --parts <part_names_separated_by_space>
+   (No parts specified = calibrate all joints)
+4. Optionally inspect joint angles in config_motors.json, then propagate:
+   python toddlerbot/descriptions/add_configs.py --robot <robot_name>
+5. Run standing policy to verify:
+   python toddlerbot/policies/run_policy.py --policy stand --robot <robot_name> --sim real
+
+Fine-tuning (if robot leans after calibration — can happen due to joint backlash):
+  python toddlerbot/policies/run_policy.py --policy calibrate --robot <robot_name> --sim real
+  Robot will stand and maintain upright via PID + IMU feedback.
+  Press Ctrl+C when upright. IMPORTANT: Hold the robot when stopping — motors will disable and robot will fall.
+
+=== KEYFRAME ANIMATION ===
+GUI tool to create keyframe animations. Test in MuJoCo before deploying to real robot.
+Most animations verified in MuJoCo can be deployed directly with minimal tuning.
+
+Run:
+  toddlerbot/tools/edit_keyframe.py --task <task_name> --run-name <run_name>
+
+You can contribute keyframe outputs to the official repo via pull request.
+
+=== TIPS AND TRICKS — HARDWARE ===
+- When using DC power supply, tape the voltage/current buttons to avoid accidental changes.
+- Always use a voltage tester when on battery power — IMPORTANT to prevent over-discharging and damaging the battery.
+- Use 2Mbps baudrate for all motors. Dynamixel XC330 cannot sustain 4Mbps — will raise warnings (no status packet).
+- Keep Jetson Orin fan uncovered to avoid overheating.
+- Secure the robot before killing a motor script or turning off power — robot may fall. Robot is robust and easy to repair.
+- When battery is low, robot may fail high-torque tasks. Check voltage tester. If low, charge battery.
+- If front cover is hard to close, check battery box pose and organize wires.
+- No space for HDMI cable from the bottom — unscrew Jetson from torso to connect HDMI. SSH is easier in most cases.
+- Repeated screwing/unscrewing may strip 3D-printed holes — just reprint the part.
+- Sporadic bugs that go away by themselves: double check all wiring. A loose cable can dump garbage on the data line and disrupt all motor communication.
+- Run standing test periodically to find loose screws — hold robot in air with standing policy, feel joints for backlash. If too much backlash, tighten screws. XC330 joints have naturally larger backlash than others, which is normal.
+- Waist joint may wear over time — reprint gears with PLA-CF and more wall loops to increase lifespan.
+
+=== TIPS AND TRICKS — SOFTWARE ===
+- Use jtop to monitor Jetson performance: pip install jetson-stats
+- Error "Was not able to enable feature (4)": IMU pins connected incorrectly. Replug IMU.
+- Message "Voltage too low. Please check power supply or charge batteries." → Stop robot immediately.
+- Error "Cannot set torque disabled/enabled..." → Use EStop button to reboot motors.
+- Dynamixel lagging: set latency timer to 1. On macOS, need a small C program (see official docs for libftdi approach).
+- Warning "[Dynamixel] > bulk_read: [TxRxResult] Incorrect (No) status packet!": A few warnings are fine. Many warnings indicate poor connection or wrong robot config (e.g. using --robot toddlerbot_gripper when robot has compliant palm).
+- Headless rendering with MuJoCo: add export MUJOCO_GL="egl" to .bashrc, then source ~/.bashrc
+- To view camera feed or visualization through SSH: set up X11 forwarding (guide: https://www.businessnewsdaily.com/11035-how-to-use-x11-forwarding.html)

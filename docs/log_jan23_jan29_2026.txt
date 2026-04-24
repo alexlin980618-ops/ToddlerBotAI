@@ -1,0 +1,78 @@
+January 23, 2026 Jetson Assembly Log
+
+Background:
+The official ToddlerBot design uses the reComputer J4012. However, due to national security regulations, our university cannot purchase ICT products from certain manufacturers. We opted for the Nvidia Jetson Orin Nano Super Developer Kit and manually replaced the module with a Jetson Orin NX 16GB.
+
+Alternative Hardware Purchased:
+- Jetson Orin NX 16GB SOM (USD $699) from Arrow. Note: Part numbers 900-13767-0000-001 and 900-13767-0000-000 are basically identical, likely different batches.
+- Jetson Orin Nano Super DevKit (USD $249) from Arrow. Note: Part numbers 945-13766-0000-000, 945-13766-0000-005, 945-13766-0000-007 appear identical. No need to buy separate WiFi card — DevKit comes pre-installed.
+- WD BLACK SN7100 500GB Gen4 NVMe SSD (~USD $49). reComputer comes with 128GB, so buy at least this capacity.
+- PTM7950 0.25mm Phase Change Thermal Pad, cut to approximately 22 x 20mm (~USD $13).
+
+Compatibility Notes:
+- Jetson Orin Nano Super DevKit Carrier Board is compatible with Jetson Orin NX (confirmed via Nvidia Forum).
+- Carrier Board dimensions: 100 x 79 x 21mm.
+- reComputer J4012 has similar layout and dimensions (see reComputer Open Source Hardware Repo).
+
+SSD Installation Process:
+1. Unscrew the screw at the M.2 slot.
+2. Insert the SSD into the M.2 slot flat for easier insertion. It will sit at a diagonal angle after insertion — this is normal.
+3. Secure the screw. Done.
+Tools needed: PH1 Phillips screwdriver.
+
+SOM Replacement Process:
+Preparation:
+- Tools needed: T7 Torx screwdriver, PH1 Phillips screwdriver, PTM7950 thermal pad, alcohol (at least 75%), lint-free cloth (e.g., lens cloth).
+- Tip: Refrigerate (do not freeze) the thermal pad before use to make cutting and application easier.
+- Disassemble the DevKit and remove the old SOM in reverse order of assembly.
+- Clean old thermal paste from the fan using alcohol and lint-free cloth.
+
+Assembly Steps:
+1. Cut a 20 x 20 x 0.25mm piece of PTM7950 thermal pad and apply it to the center 22 x 20mm platform of the SOM.
+2. Align the four holes on the SOM and the back of the fan, and attach them together using the thermal pad's adhesiveness.
+3. Attach the bracket and screws. Tip: The bracket is slightly elastic — tighten diagonal screws halfway first, then fully tighten all.
+4. Insert the SOM's gold fingers into the carrier board. It is designed to tilt upward before locking.
+5. Press the SOM down until both left and right latches click into place.
+6. Secure with screws. Tip: If screws don't go in easily, push the SOM tighter into the slot and press it closer to the screw posts.
+7. Reconnect the fan cable. Done.
+
+---
+
+January 29, 2026 JST-EH Extension Cable Wiring Fix
+
+Component: JST-EH Extension Cable
+Problem: The official BOM requires JST-EH cables and housings. To save cost (~40 TWD per cable), we purchased pre-crimped wires instead. However, the purchased cables had reversed pin order (1-3', 2-2', 3-1'), but Dynamixel requires straight wiring (1-1', 2-2', 3-3').
+Solution (without repurchasing):
+1. Hold the plastic connector housing on one end.
+2. Step on or secure the wire connected to pin 3.
+3. Pull the plastic housing away while gently prying the rightmost plastic tab with a flathead screwdriver. Do not use too much force or the plastic may deform and lose its locking ability.
+4. If successful, the wire and metal terminal will pull out together.
+5. Repeat for pin 1.
+6. Re-insert the wires in the correct order (1-1', 2-2', 3-3'). Done.
+
+---
+
+Hardware Notes (General — No Specific Date)
+
+Q: Should I configure the motors before assembly?
+A: Probably not necessary. You can configure them sequentially after assembly. However, connect only one motor to the U2D2 at a time — multiple motors with the default ID = 1 will conflict.
+Procedure:
+1. Install Dynamixel Wizard 2.0 and connect the motor to the computer.
+2. Set the baudrate to 2 Mbps.
+3. Set the motor ID according to its position on the robot (refer to Assembly PDF for ToddlerBot 1.0).
+4. Enable Torque in the Wizard, then set Target Position to 0.
+
+Q: How to power the Dynamixel motor for configuration on a laptop?
+A: Use the U2D2 (with transparent plastic case) and plug it into the U2D2 Power Hub. The Power Hub requires 12V input. We used the power adapter included with the iMax B6 Mini battery charger.
+Ref: (YouTube) How To: Connect power to U2D2 Power Hub Board for DYNAMIXEL
+
+Common Issue 1: 3D Printing Hole Size and Tolerance
+Problem: Screw head for Leg/Hip Assembly may be too large for the countersunk hole, or bearing may not fit due to printing tolerance.
+Solutions:
+- Try using the screws included with the Dynamixel motors (smaller heads).
+- If hole is too small, heat the screw slightly with a lighter (ensure ventilation, wear a mask) and melt it in.
+- Last resort: Reprint the part.
+
+Common Issue 2: U2D2 Power Supply During Configuration
+Problem: Need to power motors during configuration and assembly without the main battery.
+Solution: Use the U2D2 Power Hub. Plug U2D2 into the Power Hub and use a suitable power adapter (e.g., the one from iMax B6 Mini charger) to power the Hub.

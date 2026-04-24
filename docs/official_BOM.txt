@@ -1,0 +1,104 @@
+ToddlerBot Official Bill of Materials (BOM)
+Source: https://docs.google.com/spreadsheets/d/12MPpu1rRBogICvM5LNRhUcev6Mb_HHuyf8a1decOBxA
+
+Two versions: toddlerbot_2XC (recommended default) and toddlerbot_2XM (stronger, higher cost).
+Total cost: ~$5,728 (2XC) or ~$7,294 (2XM). Tools add ~$1,976 extra.
+Fully assembled kit available at shop.wowrobo.com for $4,299 (excludes Jetson, WiFi, Battery).
+
+=== MOTORS ===
+DYNAMIXEL 2XC430-W250-T | $298.89 | QTY: 2 (2XC), 6 (2XM)
+DYNAMIXEL 2XL430-W250-T | $149.39 | QTY: 6 (2XC), 0 (2XM)
+DYNAMIXEL XC330-T288-T | $103.39 | QTY: 6 (both)
+DYNAMIXEL XC430-T240BB-T | $137.89 | QTY: 4 (both)
+DYNAMIXEL XM430-W210-T | $310.39 | QTY: 4 (both)
+DYNAMIXEL XM430-W350-T | $310.39 | QTY: 0 (2XC), 4 (2XM)
+DYNAMIXEL HN11-I101 Set | $8.05 | QTY: 10 (2XC), 8 (2XM)
+DYNAMIXEL HN12-I101 Set | $20.47 | QTY: 4 (2XC), 6 (2XM)
+
+Motor assignments:
+- XC330-T288 (1.0 Nm): Neck pitch/yaw, Waist roll/yaw, Hip yaw, Gripper
+- XC430-T240BB (1.9 Nm): Shoulder pitch, Ankle roll
+- XM430-W210 (3.0 Nm): Knee pitch, Ankle pitch
+- 2XL430-W250 (1.5 Nm): Shoulder roll/yaw, Elbow roll/yaw, Wrist roll/pitch
+- 2XC430-W250 (1.8 Nm): Hip roll/pitch
+
+Parallel Jaw Gripper (optional): DYNAMIXEL XC330-T288-T | $103.39 | QTY: 2
+
+=== COMPUTERS ===
+Jetson Orin NX 16G (reComputer J4012) | $955.00
+M.2 CB375NF WiFi Card | $18.36
+WiFi Antenna | $9.49
+
+=== SENSORS ===
+Fisheye Camera (Arducam 1080P IMX291, 160deg, USB2.0) | $49.99 | QTY: 2
+Phone Speaker (iPhone SE replacement) | $5.99
+Speaker Driver (Bluetooth MP3 Audio Receiver Board) | $7.99
+BNO085 IMU (Adafruit 9-DOF STEMMA QT) | $24.95
+
+=== HARDWARE ===
+M2*6 Pre-coated Screws | $1.80 | QTY: 200 — IMPORTANT: use pre-coated or apply threadlocker
+M2 Screw Kit 660pcs (M2x4/6/8/10/12/16mm) | $17.98 | QTY: 2
+M2.5 Screw Kit 705pcs | $9.99
+M3 Flat Head Screw Kit 565pcs (countersunk) | $9.99
+M3*8 Set Screw 50pcs | $6.99
+M3*10 Set Screw 50pcs | $6.99
+M4 Screw Kit 675pcs | $22.38
+M4 Long Screw Kit 50pcs (M4 x 40/45/50/55/60mm) | $9.58
+M3 and M4 Lock Nuts Kit 182pcs | $7.98
+Vibra-TITE 213 Threadlocker | $6.55
+Bearing 683 3x7x3mm 10pcs | $11.96
+Bearing 684 4x9x4mm 10pcs | $15.98 | QTY: 2
+Bearing AXK0414 needle roller | $44.40 | QTY: 30
+Bushing 3*5*5 10pcs | $5.99
+5mm Rubber Tape | $16.99
+
+=== ELECTRONICS ===
+Step Down Power Converter 12V 4.5A (Pololu D36V50F12) | $69.90 | QTY: 2
+USB to Micro USB 0.5 Feet | $5.98
+USB to Micro USB 1.5 Feet | $8.99
+USB Hub Port Splitter | $6.98
+Jumper Wire | $6.98
+JST EH Cable | $3.82 | QTY: 10
+JST EH Housing | $1.17 | QTY: 25
+5 Pairs XT30 Male/Female Plugs | $9.99
+XT30 to XT60 Adapters 4pcs | $8.99
+Barrel Jack Connector DC5525 5.5mm/2.5mm | $9.49
+NOTE: BOM originally listed DC5521 but correct connector is DC5525. Confirmed error — now corrected.
+Rocker Switch 5pcs | $5.99
+2000 mAh LiPo Battery 4S | $49.99
+LiPo Battery Voltage Tester | $12.95
+LiPo Battery Balance Charger | $31.99
+14 AWG Power Extension Cable | $17.49
+
+=== MATERIALS (3D Printing) ===
+PLA-CF 1KG (Bambu Lab) | $69.98 | QTY: 2
+PLA 1KG (Bambu Lab) | $19.99
+
+=== TOOLS ===
+Bambu Lab X1-Carbon Combo 3D Printer | $1,449.00
+Bambu Smooth PEI Plate | $37.99
+Liquid Glue for Build Plate | $16.99
+Anti-vibration Foot | $10.99
+30V 10A Power Supply | $119.99
+Banana Plug Cables | $9.99
+Screwdriver Kit | $64.99
+Precision Screwdriver Kit | $29.99
+Allen Key Set | $6.95
+Pliers | $32.35
+Digital Caliper | $29.98
+Double Sided Tape | $9.99
+Automatic Wire Stripper | $9.99
+Soldering Tweezer | $5.99
+Soldering Brass Cleaner | $11.97
+Soldering Station | $69.99
+Black Silicone Repair Mat | $8.53
+Heat Shrink Tube | $6.99
+Heat Shrink Butt Connectors 100pcs | $9.49
+Helping Hands Soldering | $23.99
+60/40 Tin Lead Solder Wire | $9.99
+
+=== ADDITIONAL FEATURES ===
+Safety Stand: 4040 Connector set, 4040 Aluminum Extrusion 500mm, M5 T-Nuts Kit, 2020 Aluminum Extrusion 100mm
+Teleoperation: 6x DYNAMIXEL 2XL430, 2x XC430-T240BB, U2D2 USB Module, U2D2 Power Hub, FSR sensors, ROG Ally X ($900)
+DIY Battery: 6x Samsung 21700 cells, battery holder, JST XH balancing plug
+SysID: Portable Bench Clamp

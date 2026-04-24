@@ -1,0 +1,119 @@
+ToddlerBot Official Software Documentation
+Source: https://hshi74.github.io/toddlerbot/
+
+=== GENERAL SETUP ===
+Clone the repo:
+  mkdir ~/projects
+  cd ~/projects
+  git clone git@github.com:hshi74/toddlerbot.git
+
+Install Miniforge if conda is not installed: https://github.com/conda-forge/miniforge
+Run: uname -m to check architecture. Do NOT run installer with sudo. Answer yes to all options.
+Run: source ~/.bashrc to activate conda after install.
+
+Conda environment setup by platform:
+
+Linux:
+  conda create --name toddlerbot python=3.10
+  conda activate toddlerbot
+  pip install -e ".[linux]"
+
+Mac (arm64):
+  CONDA_SUBDIR=osx-arm64 conda create -n toddlerbot python=3.10
+  conda activate toddlerbot
+  conda config --env --set subdir osx-arm64
+  pip install -e ".[macos]"
+
+Mac (x86_64):
+  CONDA_SUBDIR=osx-64 conda create -n toddlerbot python=3.10
+  conda activate toddlerbot
+  conda config --env --set subdir osx-64
+  pip install -e ".[macos]"
+
+Windows:
+  conda create --name toddlerbot python=3.10
+  conda activate toddlerbot
+  pip install -e ".[windows]"
+
+Jetson:
+  conda create --name toddlerbot python=3.10
+  conda activate toddlerbot
+  pip install -e ".[jetson]"
+  (If pyaudio fails: sudo apt-get install -y portaudio19-dev python3-dev build-essential)
+
+=== JETSON ORIN SETUP ===
+Recommended: Jetson Orin NX 16GB for cost effectiveness.
+JetPack 6.1 or newer is STRONGLY recommended — includes TensorRT 10.3+ for better inference speed.
+Only TensorRT 10+ supported for stereo depth estimation.
+
+Flash system: follow https://wiki.seeedstudio.com/reComputer_J4012_Flash_Jetpack/
+- Use JP6.1 tab, download image for Jetson Orin NX 16GB (download may take ~1 hour)
+- For Force Recovery Mode pin location, refer to official photo
+
+After flashing:
+- Unplug power, USB-C, jumper. Replug power, HDMI, keyboard, mouse.
+- Set APP Partition to max size. No need to install Chromium.
+- Power off, install WiFi card, power on, connect WiFi.
+- Run ifconfig to get IP and hostname (e.g. 192.168.0.237 and toddy@toddy-desktop)
+- Set power mode to 0:MAXN
+
+Set up Real-Time (RT) Kernel:
+  ssh toddy@toddy-desktop.local
+  Follow: https://docs.nvidia.com/jetson/archives/r36.3/DeveloperGuide/SD/SoftwarePackagesAndTheUpdateMechanism.html
+  After reboot, check: uname -r → should contain "-rt-tegra"
+
+Additional packages:
+- Install torch/torchvision from https://developer.nvidia.com/embedded/downloads (search "PyTorch for Jetson")
+  Do NOT install numpy separately — it installs numpy 2.x which conflicts.
+  Verify: python examples/test_jax_torch.py --platform jetson
+- Install ch9344ser driver for 8-channel communication board:
+    git clone git@github.com:WCHSoftGroup/ch9344ser_linux.git
+    cd ch9344ser_linux/driver/ && make && sudo make install
+- Set up Jetson.GPIO:
+    sudo groupadd -f -r gpio
+    sudo usermod -aG gpio $USER
+    sudo chown root.gpio /dev/gpiochip0
+    sudo chmod 660 /dev/gpiochip0
+- Add user to i2c and dialout groups:
+    sudo usermod -aG i2c $USER
+    sudo usermod -aG dialout $USER
+- Reboot and verify: run groups → should show i2c, dialout, gpio
+- Install NTP for teleoperation timing sync:
+    sudo apt install ntp ntpdate && sudo systemctl enable ntp
+    Edit /etc/ntp.conf: comment out pool lines, add: server <steam_deck_ip> iburst
+- Install camera packages: sudo apt install v4l-utils ffmpeg
+- Install audio packages: sudo apt install portaudio19-dev flac
+
+For stereo depth (FoundationStereo + TensorRT, requires JetPack 6.1+):
+  Check CUDA: cat /usr/local/cuda/version.json
+  export PATH=/usr/local/cuda-12.6/bin:$PATH && export CUDA_ROOT=/usr/local/cuda
+  pip install pycuda
+  echo "/usr/lib/python3.10/dist-packages" > $CONDA_PREFIX/lib/python3.10/site-packages/tensorrt_global.pth
+
+=== ROG ALLY X SETUP ===
+Recommended over Steam Deck — easier setup, better performance.
+1. Install C++ Build Tools from https://visualstudio.microsoft.com/visual-cpp-build-tools/
+2. Set joystick control mode to "Gamepad" (tutorial: https://youtu.be/LQcqXoamMew)
+3. In Windows PowerShell:
+   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+   (Install choco, git, ffmpeg via choco)
+4. Set Dynamixel latency timer to 1 in Device Manager → COM port → Properties → Advanced
+5. Enable NTP Server (Windows Registry):
+   HKLM\SYSTEM\CurrentControlSet\Services\W32Time\Config → AnnounceFlags = 5
+   HKLM\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpServer → Enabled = 1
+   Run: sc config w32time start=auto && net start w32time
+   Run: w32tm /config /manualpeerlist:"time.windows.com" /syncfromflags:manual /update
+   Run: w32tm /config /reliable:YES && w32tm /resync
+   Test from Jetson: sudo ntpdate <windows_ip_address>
+
+=== STEAM DECK SETUP ===
+Handheld Arch Linux PC, alternative to ROG Ally X.
+1. Install VSCode from built-in app store. Use terminals directly, not VSCode shells.
+2. Unlock filesystem: follow https://christitus.com/unlock-steam-deck/
+3. Add user to uucp group: sudo usermod -aG uucp $USER
+4. Shut down Steam before running joystick scripts (Steam overrides joystick access)
+   Test: python tests/test_joystick.py
+5. NTP setup:
+   sudo pacman -S ntp && sudo systemctl enable ntp
+   Edit /etc/ntp.conf: add restrict <client_ip> mask 255.255.255.255 nomodify notrap
+   sudo systemctl start ntp
