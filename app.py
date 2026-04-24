@@ -6,38 +6,40 @@ import chromadb
 from dotenv import load_dotenv
 from google import genai
 
-# Load API key
+# --- 1. Setup and API Key ---
 load_dotenv()
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
-# --- UPGRADED AUTO-BUILD LOGIC ---
-if not os.path.exists("./chroma_db"):
-    with st.spinner("First-time setup: Building the ToddlerBot memory..."):
-        try:
-            # Run the engine and capture any errors
-            subprocess.run(
-                [sys.executable, "rag_engine.py"], 
-                capture_output=True, 
-                text=True, 
-                check=True
-            )
-        except subprocess.CalledProcessError as e:
-            # If it crashes, print the exact error to the screen!
-            st.error("rag_engine.py crashed! Here is the exact error:")
-            st.code(e.stderr)
-            st.stop()
-# ---------------------------------
-
-# Connect to ChromaDB
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
-collection = chroma_client.get_collection(name="toddlerbot_memory")
-
-# Page setup
+# --- 2. Page Configuration ---
 st.set_page_config(page_title="ToddlerBot AI", page_icon="🤖")
 st.title("🤖 ToddlerBot Knowledge Assistant")
 st.caption("Ask me anything about building ToddlerBot!")
 
-# Conversation memory
+# --- 3. Bulletproof Database Connection ---
+chroma_client = chromadb.PersistentClient(path="./chroma_db")
+
+try:
+    # Try to grab the collection
+    collection = chroma_client.get_collection(name="toddlerbot_memory")
+except Exception as e:
+    # If it fails, the database is empty or broken. Force a rebuild and spill the logs!
+    with st.spinner("Memory missing! Forcing engine to rebuild..."):
+        result = subprocess.run(
+            [sys.executable, "rag_engine.py"], 
+            capture_output=True, 
+            text=True
+        )
+        st.error("Engine forced to run. Here are the internal logs:")
+        
+        st.markdown("**What the engine thought it did (Standard Output):**")
+        st.code(result.stdout or "No output printed.")
+        
+        st.markdown("**The hidden crash reason (Standard Error):**")
+        st.code(result.stderr or "No errors thrown.")
+        
+        st.stop()
+
+# --- 4. Conversation Memory ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -46,7 +48,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Chat input
+# --- 5. Chat Interface & Logic ---
 if prompt := st.chat_input("Ask a question about ToddlerBot..."):
 
     # Show user message
