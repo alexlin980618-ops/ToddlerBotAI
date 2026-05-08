@@ -59,16 +59,22 @@ if prompt := st.chat_input("Ask a question about ToddlerBot..."):
     # Search ChromaDB for 3 most relevant docs
     results = collection.query(
         query_texts=[prompt],
-        n_results=3
+        n_results=5
+        
     )
     
     # Safety check: Ensure documents were actually found
     if results['documents'] and results['documents'][0]:
         found_texts = "\n\n---\n\n".join(results['documents'][0])
         sources = [m['source'] for m in results['metadatas'][0]]
+        # ADD THESE TWO NEW LINES HERE:
+        distance = results['distances'][0][0]
+        confidence = round((1 - min(distance, 1)) * 100, 1)
     else:
         found_texts = "No relevant documents found in the database."
         sources = ["None"]
+        # ADD THIS LINE HERE:
+        confidence = 0
 
     # Build conversation history for Gemini
     history = "\n".join([
@@ -76,12 +82,13 @@ if prompt := st.chat_input("Ask a question about ToddlerBot..."):
         for m in st.session_state.messages[:-1]
     ])
 
-    # Prompt template
+# Prompt template
     system_prompt = f"""
-You are the ToddlerBot AI assistant for the NYCU replication team.
-Answer using ONLY the provided documents below.
-If the answer is not in the documents, ask the user a follow-up question to get more context.
-Never make things up.
+You are the ToddlerBot AI assistant for the NYCU replication team. 
+
+First, prioritize answering using the provided team documents below. 
+If the exact answer is not in the documents, you are permitted to use your general knowledge about robotics, hardware engineering, the SO-ARM100 robotic arm architecture, and programming to help the team. 
+If you are relying on general knowledge instead of the specific team documents, gently let the user know.
 
 CONVERSATION HISTORY:
 {history}
@@ -108,6 +115,7 @@ RELEVANT DOCUMENTS:
             if sources != ["None"]:
                 unique_sources = list(set(sources))
                 st.caption(f"Sources: {', '.join(unique_sources)}")
+            st.caption(f"🎯 Confidence: {confidence}%")
 
     # Save assistant response to memory
     st.session_state.messages.append({
